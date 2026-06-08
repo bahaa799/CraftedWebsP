@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crafted Webs — Digital Experiences</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #C9A96E;
+      --gold-light: #E8D5B0;
+      --gold-dark: #8B6914;
+      --cream: #F5EFE6;
+      --dark: #0D0B09;
+      --dark-2: #1A1612;
+      --dark-3: #251F18;
+      --text-muted: #7A7065;
+      --white: #FAFAF8;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: var(--dark);
+      color: var(--white);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom Cursor */
+    .cursor {
+      position: fixed;
+      width: 8px; height: 8px;
+      background: var(--gold);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease;
+    }
+    .cursor-ring {
+      position: fixed;
+      width: 36px; height: 36px;
+      border: 1px solid rgba(201,169,110,0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: all 0.18s ease;
+    }
+    .cursor-ring.hovered {
+      width: 56px; height: 56px;
+      background: rgba(201,169,110,0.08);
+      border-color: var(--gold);
+    }
+
+    /* Noise Texture Overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9990;
+      opacity: 0.35;
+    }
+
+    /* ─── HEADER ─── */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 28px 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.4s ease, padding 0.4s ease;
+    }
+    header.scrolled {
+      background: rgba(13,11,9,0.92);
+      backdrop-filter: blur(20px);
+      padding: 18px 60px;
+      border-bottom: 1px solid rgba(201,169,110,0.12);
+    }
+    .logo img {
+      height: 52px;
+      width: auto;
+      filter: brightness(1.1);
+    }
+    nav { display: flex; align-items: center; gap: 44px; }
+    nav a {
+      color: rgba(250,250,248,0.7);
+      text-decoration: none;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      transition: color 0.3s;
+      position: relative;
+    }
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0; right: 0;
+      height: 1px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+    nav a:hover { color: var(--gold); }
+    nav a:hover::after { transform: scaleX(1); }
+    .nav-cta {
+      padding: 10px 26px;
+      border: 1px solid var(--gold);
+      color: var(--gold) !important;
+      border-radius: 2px;
+      transition: all 0.3s ease !important;
+    }
+    .nav-cta:hover {
+      background: var(--gold) !important;
+      color: var(--dark) !important;
+    }
+    .nav-cta::after { display: none; }
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px; height: 1.5px;
+      background: var(--gold);
+      transition: all 0.3s;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      height: 100vh;
+      min-height: 700px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('CWP_png.webp');
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.28) saturate(0.8);
+      transform: scale(1.06);
+      transition: transform 8s ease;
+    }
+    .hero-bg.loaded { transform: scale(1); }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(13,11,9,0.6) 0%, rgba(201,169,110,0.04) 50%, rgba(13,11,9,0.8) 100%);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 0 20px;
+    }
+    .hero-eyebrow {
+      font-size: 0.68rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 32px;
+      margin-top:70px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.3s forwards;
+    }
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(4rem, 10vw, 9rem);
+      font-weight: 300;
+      line-height: 0.92;
+      letter-spacing: -0.01em;
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.5s forwards;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+    .hero-subtitle {
+      font-size: 0.82rem;
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: rgba(250,250,248,0.55);
+      max-width: 440px;
+      margin: 0 auto 52px;
+      line-height: 1.8;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.7s forwards;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.9s forwards;
+    }
+    .btn-primary-hero {
+      padding: 16px 44px;
+      background: var(--gold);
+      color: var(--dark);
+      text-decoration: none;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+      border: 1px solid var(--gold);
+    }
+    .btn-primary-hero:hover {
+      background: transparent;
+      color: var(--gold);
+    }
+    .btn-secondary-hero {
+      padding: 16px 44px;
+      border: 1px solid rgba(250,250,248,0.25);
+      color: rgba(250,250,248,0.7);
+      text-decoration: none;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    .btn-secondary-hero:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    .hero-scroll {
+      position: absolute;
+      bottom: 42px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 1.2s forwards;
+    }
+    .hero-scroll span {
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .scroll-line {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      animation: scrollPulse 2s ease infinite;
+    }
+
+    /* ─── MARQUEE ─── */
+    .marquee-section {
+      padding: 22px 0;
+      background: var(--gold);
+      overflow: hidden;
+      margin-top: 30px;
+      border-top: 1px solid rgba(0,0,0,0.1);
+    }
+    .marquee-track {
+      display: flex;
+      gap: 0;
+      animation: marquee 22s linear infinite;
+      white-space: nowrap;
+    }
+    .marquee-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 24px;
+      padding: 0 40px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--dark);
+    }
+    .marquee-dot {
+      width: 5px; height: 5px;
+      background: var(--dark);
+      border-radius: 50%;
+      opacity: 0.4;
+    }
+
+    /* ─── ABOUT ─── */
+    .about-section {
+      padding: 140px 60px;
+      max-width: 1300px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 100px;
+      align-items: center;
+    }
+    .about-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .about-label::before {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 1px;
+      background: var(--gold);
+    }
+    .about-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.8rem, 5vw, 4.5rem);
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      margin-bottom: 32px;
+    }
+    .about-heading em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+    .about-text {
+      font-size: 0.88rem;
+      line-height: 1.95;
+      color: rgba(250,250,248,0.6);
+      font-weight: 300;
+      margin-bottom: 24px;
+    }
+    .about-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border: 1px solid rgba(201,169,110,0.15);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .stat-item {
+      padding: 32px 24px;
+      border-right: 1px solid rgba(201,169,110,0.15);
+      text-align: center;
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.8rem;
+      font-weight: 300;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .stat-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .about-visual {
+      position: relative;
+    }
+    .about-img-wrap {
+      position: relative;
+      overflow: hidden;
+      border-radius: 4px;
+    }
+    .about-img-wrap img {
+      width: 100%;
+      filter: sepia(0.15) brightness(0.85);
+      display: block;
+      transition: transform 0.6s ease;
+    }
+    .about-img-wrap:hover img { transform: scale(1.04); }
+    .about-gold-frame {
+      position: absolute;
+      top: -20px; right: -20px;
+      width: 70%; height: 70%;
+      border: 1px solid rgba(201,169,110,0.3);
+      border-radius: 4px;
+      z-index: -1;
+    }
+    .about-gold-tag {
+      position: absolute;
+      bottom: 24px; left: -24px;
+      background: var(--dark-3);
+      border: 1px solid rgba(201,169,110,0.25);
+      padding: 16px 24px;
+      border-radius: 4px;
+    }
+    .about-gold-tag .tag-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .about-gold-tag .tag-text {
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    /* ─── SERVICES ─── */
+    .services-section {
+      padding: 120px 60px;
+      background: var(--dark-2);
+      position: relative;
+      overflow: hidden;
+    }
+    .services-section::before {
+      content: 'SERVICES';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22vw;
+      font-weight: 300;
+      color: rgba(201,169,110,0.025);
+      letter-spacing: -0.02em;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .section-header {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 80px;
+      position: relative;
+    }
+    .section-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.2rem, 4vw, 3.5rem);
+      font-weight: 300;
+      line-height: 1.15;
+    }
+    .section-title em { font-style: italic; color: var(--gold-light); }
+    .services-grid {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: rgba(201,169,110,0.08);
+      border: 1px solid rgba(201,169,110,0.08);
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+    }
+    .service-card {
+      background: var(--dark-2);
+      padding: 52px 44px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.4s ease;
+      cursor: default;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(201,169,110,0.06) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .service-card:hover { background: var(--dark-3); }
+    .service-card:hover::before { opacity: 1; }
+    .service-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 4rem;
+      font-weight: 300;
+      color: rgba(201,169,110,0.15);
+      line-height: 1;
+      margin-bottom: 32px;
+      transition: color 0.4s ease;
+    }
+    .service-card:hover .service-num { color: rgba(201,169,110,0.3); }
+    .service-icon {
+      width: 42px; height: 42px;
+      margin-bottom: 24px;
+    }
+    .service-icon svg { width: 100%; height: 100%; }
+    .service-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.65rem;
+      font-weight: 400;
+      margin-bottom: 16px;
+      color: var(--white);
+    }
+    .service-text {
+      font-size: 0.8rem;
+      line-height: 1.85;
+      color: rgba(250,250,248,0.5);
+      font-weight: 300;
+      margin-bottom: 32px;
+    }
+    .service-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      transition: gap 0.3s ease;
+    }
+    .service-link:hover { gap: 16px; }
+    .service-line {
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: var(--gold);
+      transition: width 0.3s ease;
+    }
+    .service-link:hover .service-line { width: 36px; }
+
+    /* Pricing teaser */
+    .pricing-badge {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 6px 14px;
+      border: 1px solid rgba(201,169,110,0.25);
+      border-radius: 100px;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+    }
+
+    /* ─── PORTFOLIO MARQUEE ─── */
+    .portfolio-section {
+      padding: 120px 0 80px;
+      overflow: hidden;
+    }
+    .portfolio-header {
+      padding: 0 60px;
+      max-width: 1300px;
+      margin: 0 auto 64px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+    .portfolio-cards {
+      display: flex;
+      gap: 24px;
+      padding: 0 60px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      scroll-snap-type: x mandatory;
+    }
+    .portfolio-cards::-webkit-scrollbar { display: none; }
+    .portfolio-card {
+      flex: 0 0 380px;
+      scroll-snap-align: start;
+      background: var(--dark-3);
+      border: 1px solid rgba(201,169,110,0.1);
+      border-radius: 6px;
+      overflow: hidden;
+      transition: transform 0.4s ease, border-color 0.4s ease;
+    }
+    .portfolio-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(201,169,110,0.3);
+    }
+    .portfolio-card-img {
+      width: 100%;
+      height: 240px;
+      background: linear-gradient(135deg, var(--dark-2), var(--dark-3));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .portfolio-card-img img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.7); transition: all 0.5s ease; }
+    .portfolio-card:hover .portfolio-card-img img { filter: brightness(0.85); transform: scale(1.05); }
+    .portfolio-placeholder {
+      width: 100%; height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 4rem;
+      color: rgba(201,169,110,0.2);
+    }
+    .portfolio-card-body {
+      padding: 28px 28px 32px;
+    }
+    .portfolio-tag {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+    .portfolio-card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 400;
+      margin-bottom: 8px;
+    }
+    .portfolio-card-desc {
+      font-size: 0.78rem;
+      color: rgba(250,250,248,0.45);
+      line-height: 1.7;
+    }
+
+    /* ─── PROCESS ─── */
+    .process-section {
+      padding: 140px 60px;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+    .process-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      margin-top: 80px;
+    }
+    .process-steps { display: flex; flex-direction: column; gap: 0; }
+    .process-step {
+      display: flex;
+      gap: 28px;
+      padding: 32px 0;
+      border-bottom: 1px solid rgba(201,169,110,0.1);
+      cursor: default;
+      transition: all 0.3s ease;
+    }
+    .process-step:first-child { border-top: 1px solid rgba(201,169,110,0.1); }
+    .process-step:hover { padding-left: 12px; }
+    .step-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      color: var(--gold);
+      opacity: 0.6;
+      min-width: 28px;
+      padding-top: 2px;
+    }
+    .step-body {}
+    .step-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 400;
+      margin-bottom: 8px;
+    }
+    .step-text {
+      font-size: 0.8rem;
+      color: rgba(250,250,248,0.45);
+      line-height: 1.8;
+      font-weight: 300;
+    }
+    .process-visual {
+      position: relative;
+    }
+    .process-circle {
+      width: 100%;
+      aspect-ratio: 1;
+      max-width: 420px;
+      margin: 0 auto;
+      border: 1px solid rgba(201,169,110,0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .process-circle::before {
+      content: '';
+      position: absolute;
+      inset: 16px;
+      border: 1px dashed rgba(201,169,110,0.1);
+      border-radius: 50%;
+      animation: rotateSlow 20s linear infinite;
+    }
+    .process-circle-inner {
+      text-align: center;
+    }
+    .process-circle-inner .big-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 5rem;
+      font-weight: 300;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .process-circle-inner .big-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .orbit-dot {
+      position: absolute;
+      width: 10px; height: 10px;
+      background: var(--gold);
+      border-radius: 50%;
+      animation: orbit 6s linear infinite;
+    }
+    .orbit-dot:nth-child(2) { animation-delay: -2s; opacity: 0.5; }
+    .orbit-dot:nth-child(3) { animation-delay: -4s; opacity: 0.25; }
+
+    /* ─── TESTIMONIALS ─── */
+    .testimonials-section {
+      padding: 120px 60px;
+      background: var(--dark-2);
+    }
+    .testimonials-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      margin-top: 64px;
+    }
+    .testimonial-card {
+      background: var(--dark-3);
+      border: 1px solid rgba(201,169,110,0.1);
+      border-radius: 6px;
+      padding: 44px;
+      position: relative;
+      transition: border-color 0.3s ease;
+    }
+    .testimonial-card:hover { border-color: rgba(201,169,110,0.25); }
+    .testimonial-card:first-child {
+      grid-column: span 2;
+      background: linear-gradient(135deg, var(--dark-3), rgba(201,169,110,0.04));
+    }
+    .quote-mark {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 6rem;
+      color: var(--gold);
+      opacity: 0.2;
+      line-height: 0.7;
+      margin-bottom: 24px;
+      display: block;
+    }
+    .testimonial-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-style: italic;
+      line-height: 1.7;
+      color: rgba(250,250,248,0.85);
+      margin-bottom: 28px;
+      font-weight: 300;
+    }
+    .testimonial-card:first-child .testimonial-text { font-size: 1.55rem; }
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .author-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      color: var(--dark);
+      font-weight: 600;
+    }
+    .author-name {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+    .author-role {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .stars { color: var(--gold); font-size: 0.8rem; margin-bottom: 16px; }
+
+    /* ─── CONTACT ─── */
+    .contact-section {
+      padding: 140px 60px;
+      max-width: 1300px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 100px;
+      align-items: start;
+    }
+    .contact-info {}
+    .contact-tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 4vw, 3.8rem);
+      font-weight: 300;
+      line-height: 1.1;
+      margin-bottom: 28px;
+    }
+    .contact-tagline em { font-style: italic; color: var(--gold-light); }
+    .contact-desc {
+      font-size: 0.85rem;
+      line-height: 1.9;
+      color: rgba(250,250,248,0.5);
+      font-weight: 300;
+      margin-bottom: 48px;
+    }
+    .contact-channels { display: flex; flex-direction: column; gap: 16px; }
+    .contact-channel {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      border: 1px solid rgba(201,169,110,0.1);
+      border-radius: 4px;
+      text-decoration: none;
+      color: rgba(250,250,248,0.7);
+      font-size: 0.82rem;
+      transition: all 0.3s ease;
+      font-weight: 300;
+    }
+    .contact-channel:hover {
+      border-color: rgba(201,169,110,0.3);
+      color: var(--gold);
+      padding-left: 26px;
+    }
+    .channel-icon {
+      width: 18px; height: 18px;
+      opacity: 0.6;
+      filter: invert(1);
+    }
+    .contact-channel:hover .channel-icon { opacity: 1; filter: invert(1) sepia(1) saturate(2) hue-rotate(5deg); }
+
+    /* Contact Form */
+    .contact-form-wrap {
+      background: var(--dark-2);
+      border: 1px solid rgba(201,169,110,0.12);
+      border-radius: 8px;
+      padding: 52px;
+    }
+    .form-group { margin-bottom: 28px; }
+    .form-label {
+      display: block;
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    .form-control {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(201,169,110,0.15);
+      border-radius: 3px;
+      padding: 14px 18px;
+      color: var(--white);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 300;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+    .form-control:focus {
+      border-color: var(--gold);
+      background: rgba(201,169,110,0.04);
+    }
+    .form-control::placeholder { color: rgba(250,250,248,0.2); }
+    textarea.form-control { resize: none; height: 130px; }
+    .form-select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23C9A96E' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 18px center;
+      cursor: pointer;
+    }
+    .form-select option { background: var(--dark-2); }
+    .btn-submit {
+      width: 100%;
+      padding: 18px;
+      background: var(--gold);
+      border: none;
+      border-radius: 3px;
+      color: var(--dark);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .btn-submit:hover { background: var(--gold-light); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--dark);
+      border-top: 1px solid rgba(201,169,110,0.1);
+      padding: 60px;
+    }
+    .footer-inner {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 60px;
+      margin-bottom: 52px;
+    }
+    .footer-brand img { height: 44px; margin-bottom: 20px; }
+    .footer-tagline {
+      font-size: 0.8rem;
+      color: rgba(250,250,248,0.4);
+      line-height: 1.8;
+      font-weight: 300;
+      margin-bottom: 28px;
+    }
+    .footer-social { display: flex; gap: 12px; }
+    .social-btn {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(201,169,110,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    
+.social-btn {
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(201, 169, 110, 0.35);
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.social-btn img {
+  margin-top: 19px;
+  width: 16px;
+  height: 16px;
+  filter: invert(1);
+  opacity: 0.6;
+  display: block;
+}
+
+.social-btn:hover {
+  border-color: var(--gold);
+  background: rgba(201,169,110,0.1);
+}
+
+.social-btn:hover img {
+  opacity: 1;
+}
+
+
+
+
+    .footer-col-title {
+      font-size: 0.62rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+    .footer-links { display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a {
+      color: rgba(250,250,248,0.4);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 300;
+      transition: color 0.3s ease;
+    }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-bottom {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding-top: 28px;
+      border-top: 1px solid rgba(201,169,110,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-copy {
+      font-size: 0.7rem;
+      color: rgba(250,250,248,0.25);
+    }
+    .footer-copy span { color: var(--gold); }
+
+    /* ─── MOBILE NAV ─── */
+    .mobile-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--dark);
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+    .mobile-overlay.open { opacity: 1; pointer-events: all; }
+    .mobile-overlay a {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem;
+      font-weight: 300;
+      color: var(--white);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .mobile-overlay a:hover { color: var(--gold); }
+
+    /* ─── SUCCESS MODAL ─── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(13,11,9,0.85);
+      backdrop-filter: blur(8px);
+      z-index: 9000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal-box {
+      background: var(--dark-2);
+      border: 1px solid rgba(201,169,110,0.25);
+      border-radius: 8px;
+      padding: 60px;
+      text-align: center;
+      max-width: 440px;
+      width: 90%;
+    }
+    .modal-icon {
+      width: 64px; height: 64px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 28px;
+      font-size: 1.6rem;
+      color: var(--gold);
+    }
+    .modal-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 300;
+      margin-bottom: 14px;
+    }
+    .modal-text { font-size: 0.82rem; color: rgba(250,250,248,0.5); line-height: 1.8; font-weight: 300; }
+    .modal-close {
+      margin-top: 32px;
+      padding: 12px 32px;
+      background: var(--gold);
+      border: none;
+      border-radius: 3px;
+      color: var(--dark);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.3); }
+    }
+    @keyframes rotateSlow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes orbit {
+      from { transform: rotate(0deg) translateX(160px) rotate(0deg); }
+      to { transform: rotate(360deg) translateX(160px) rotate(-360deg); }
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 1024px) {
+      .about-section { grid-template-columns: 1fr; gap: 60px; }
+      .services-grid { grid-template-columns: 1fr; }
+      .process-grid { grid-template-columns: 1fr; }
+      .process-visual { display: none; }
+      .contact-section { grid-template-columns: 1fr; gap: 60px; }
+      .footer-inner { grid-template-columns: 1fr 1fr; gap: 40px; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .testimonial-card:first-child { grid-column: span 1; }
+    }
+    @media (max-width: 768px) {
+      header { padding: 20px 24px; }
+      header.scrolled { padding: 14px 24px; }
+      nav { display: none; }
+      .hamburger { display: flex; }
+      .about-section, .services-section, .process-section,
+      .contact-section, .testimonials-section { padding: 80px 24px; }
+      .portfolio-header { padding: 0 24px; }
+      .portfolio-cards { padding: 0 24px; }
+      .portfolio-card { flex: 0 0 300px; }
+      footer { padding: 48px 24px; }
+      .footer-inner { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+      .hero-title { font-size: 3.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Custom Cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- Mobile Nav Overlay -->
+  <div class="mobile-overlay" id="mobileOverlay">
+    <a href="#about" onclick="closeMobile()">About</a>
+    <a href="#services" onclick="closeMobile()">Services</a>
+    <a href="#contact" onclick="closeMobile()">Book Now</a>
+    <a href="terms..html" onclick="closeMobile()">Terms</a>
+  </div>
+
+  <!-- Header -->
+  <header id="mainHeader">
+    <div class="logo">
+      <a href="#"><img src="CWL.png" alt="Crafted Webs"></a>
+    </div>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="#contact">Contact</a>
+      <a href="terms..html">Terms</a>
+      <a href="#contact" class="nav-cta">Book Now</a>
+    </nav>
+    <button class="hamburger" id="menuBtn" onclick="toggleMobile()">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-bg" id="heroBg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Web Design & Digital Branding</p>
+      <h1 class="hero-title">
+        Crafted<br><em>for Your</em><br>Vision
+      </h1>
+      <p class="hero-subtitle">Premium websites, logos, and digital experiences that position your brand in a class of its own.</p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn-primary-hero">Start Your Project</a>
+        <a href="#services" class="btn-secondary-hero">Explore Services</a>
+      </div>
+    </div>
+  
+  </section>
+
+  <!-- Marquee -->
+  <div class="marquee-section">
+    <div class="marquee-track">
+      <div class="marquee-item">Web Design <span class="marquee-dot"></span></div>
+      <div class="marquee-item">Logo Creation <span class="marquee-dot"></span></div>
+      <div class="marquee-item">Brand Identity <span class="marquee-dot"></span></div>
+      <div class="marquee-item">Graphic Design <span class="marquee-dot"></span></div>
+      <div class="marquee-item">Photo Editing <span class="marquee-dot"></span></div>
+      <div class="marquee-item">UI/UX Design <span class="marquee-dot"></span></div>
+      <div class="marquee-item">Social Media Branding <span class="marquee-dot"></span></div>
+      <div class="marquee-item">E-Commerce <span class="marquee-dot"></span></div>
+      <!-- Duplicate for seamless loop -->
+      <div class="marquee-item">Web Design <span class="marquee-dot"></span></div>
+      <div class="marquee-item">Logo Creation <span class="marquee-dot"></span></div>
+      <div class="marquee-item">Brand Identity <span class="marquee-dot"></span></div>
+      <div class="marquee-item">Graphic Design <span class="marquee-dot"></span></div>
+      <div class="marquee-item">Photo Editing <span class="marquee-dot"></span></div>
+      <div class="marquee-item">UI/UX Design <span class="marquee-dot"></span></div>
+      <div class="marquee-item">Social Media Branding <span class="marquee-dot"></span></div>
+      <div class="marquee-item">E-Commerce <span class="marquee-dot"></span></div>
+    </div>
+  </div>
+
+  <!-- About -->
+  <section id="about">
+    <div class="about-section">
+      <div>
+        <p class="about-label reveal">About</p>
+        <h2 class="about-heading reveal reveal-delay-1">
+          Create Your<br><em>Dream</em><br>Website
+        </h2>
+        <p class="about-text reveal reveal-delay-2">
+          I'm a designer and developer passionate about turning ideas into exceptional digital experiences. I combine technical precision with aesthetic intuition to build websites and brands that don't just look great — they perform.
+        </p>
+        <p class="about-text reveal reveal-delay-2">
+          Whether you're launching a new business or elevating an existing one, I bring the same level of craft and dedication to every project — because your brand deserves nothing less.
+        </p>
+        <div class="about-stats reveal reveal-delay-3">
+          <div class="stat-item">
+            <div class="stat-number">50+</div>
+            <div class="stat-label">Projects Done</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">3+</div>
+            <div class="stat-label">Years Experience</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">100%</div>
+            <div class="stat-label">Client Satisfaction</div>
+          </div>
+        </div>
+      </div>
+      <div class="about-visual reveal">
+        <div class="about-img-wrap">
+          <img src="CWP,png.webp" alt="Crafted Webs — Design Studio">
+          <div class="about-gold-frame"></div>
+        </div>
+      
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section id="services" class="services-section">
+    <div class="section-header reveal">
+      <p class="section-label">What I Offer</p>
+      <h2 class="section-title">Premium <em>Services</em><br>for Every Need</h2>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <div class="service-num">01</div>
+        <div class="service-icon">
+          <svg viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="7" width="36" height="26" rx="3" stroke="#C9A96E" stroke-width="1.2"/>
+            <path d="M3 13h36" stroke="#C9A96E" stroke-width="1.2"/>
+            <circle cx="8" cy="10" r="1.2" fill="#C9A96E"/>
+            <circle cx="13" cy="10" r="1.2" fill="#C9A96E"/>
+            <path d="M10 21l4 4-4 4M19 29h10" stroke="#C9A96E" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3 class="service-title">Website Design & Development</h3>
+        <p class="service-text">Sleek, mobile-responsive websites tailored to your brand — from elegant landing pages to full e-commerce stores. WordPress, Shopify, or fully custom-coded solutions.</p>
+        <div class="pricing-badge">Starting at $200</div>
+        <br>
+        <a href="#contact" class="service-link">
+          Book a Consultation <span class="service-line"></span>
+        </a>
+      </div>
+      <div class="service-card reveal reveal-delay-1">
+        <div class="service-num">02</div>
+        <div class="service-icon">
+          <svg viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 6l3.5 10.5H36l-9 6.5 3.5 10.5L21 27l-9.5 6.5 3.5-10.5-9-6.5h11.5z" stroke="#C9A96E" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3 class="service-title">Logo & Brand Identity</h3>
+        <p class="service-text">A powerful logo is the cornerstone of your brand. I craft memorable marks alongside full identity kits — business cards, social templates, and consistent visual language across all platforms.</p>
+        <div class="pricing-badge">Starting at $15</div>
+        <br>
+        <a href="#contact" class="service-link">
+          Book a Consultation <span class="service-line"></span>
+        </a>
+      </div>
+      <div class="service-card reveal reveal-delay-2">
+        <div class="service-num">03</div>
+        <div class="service-icon">
+          <svg viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="5" y="5" width="32" height="32" rx="4" stroke="#C9A96E" stroke-width="1.2"/>
+            <circle cx="14" cy="15" r="3.5" stroke="#C9A96E" stroke-width="1.2"/>
+            <path d="M5 28l10-10 7 7 5-5 10 10" stroke="#C9A96E" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3 class="service-title">Graphic Design & Photo Editing</h3>
+        <p class="service-text">From retouched photography to polished social media graphics, flyers, and marketing materials — I transform visuals into assets that command attention and drive results.</p>
+        <div class="pricing-badge">Starting at $10 / photo</div>
+        <br>
+        <a href="#contact" class="service-link">
+          Book a Consultation <span class="service-line"></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Portfolio Preview -->
+  <section id="portfolio" class="portfolio-section">
+    <div class="portfolio-header">
+      <div>
+        <p class="section-label reveal">Portfolio</p>
+        <h2 class="section-title reveal reveal-delay-1">Recent <em>Work</em></h2>
+      </div>
+      <a href="#contact" class="btn-secondary-hero reveal" style="white-space: nowrap;">Start Your Project →</a>
+    </div>
+    <div class="portfolio-cards">
+      <div class="portfolio-card reveal">
+        <div class="portfolio-card-img">
+          <img src="BL.png" alt="Project 1">
+        </div>
+        <div class="portfolio-card-body">
+          <p class="portfolio-tag">Web Design</p>
+          <h3 class="portfolio-card-title">Business Landing Page</h3>
+          <p class="portfolio-card-desc">Modern, conversion-optimized landing page with custom animations.</p>
+        </div>
+      </div>
+      <div class="portfolio-card reveal reveal-delay-1">
+        <div class="portfolio-card-img">
+            <img src="CB.png" alt="Project 2">
+        
+        </div>
+        <div class="portfolio-card-body">
+          <p class="portfolio-tag">Brand Identity</p>
+          <h3 class="portfolio-card-title">Complete Brand Kit</h3>
+          <p class="portfolio-card-desc">Logo, color palette, typography, and business card design.</p>
+        </div>
+      </div>
+      <div class="portfolio-card reveal reveal-delay-2">
+        <div class="portfolio-card-img">
+            <img src="SS.png" alt="Project 3">
+        </div>
+        <div class="portfolio-card-body">
+          <p class="portfolio-tag">E-Commerce</p>
+          <h3 class="portfolio-card-title">Shopify Store</h3>
+          <p class="portfolio-card-desc">Custom Shopify storefront with seamless checkout experience.</p>
+        </div>
+      </div>
+      <div class="portfolio-card reveal reveal-delay-3">
+        <div class="portfolio-card-img">
+            <img src="SM.png" alt="Project 4">
+        </div>
+        <div class="portfolio-card-body">
+          <p class="portfolio-tag">Graphic Design</p>
+          <h3 class="portfolio-card-title">Social Media Branding</h3>
+          <p class="portfolio-card-desc">Cohesive Instagram & Facebook template sets for consistent brand presence.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process -->
+  <section class="process-section">
+    <div class="section-header reveal" style="text-align: left; margin-bottom: 0;">
+      <p class="section-label">How It Works</p>
+      <h2 class="section-title">The <em>Process</em></h2>
+    </div>
+    <div class="process-grid">
+      <div class="process-steps">
+        <div class="process-step reveal">
+          <span class="step-num">01</span>
+          <div class="step-body">
+            <h4 class="step-title">Discovery & Brief</h4>
+            <p class="step-text">We discuss your vision, goals, and target audience. I listen deeply to understand exactly what your brand needs to succeed.</p>
+          </div>
+        </div>
+        <div class="process-step reveal reveal-delay-1">
+          <span class="step-num">02</span>
+          <div class="step-body">
+            <h4 class="step-title">Strategy & Concept</h4>
+            <p class="step-text">I develop a creative direction and strategy aligned with your business objectives and brand personality.</p>
+          </div>
+        </div>
+        <div class="process-step reveal reveal-delay-2">
+          <span class="step-num">03</span>
+          <div class="step-body">
+            <h4 class="step-title">Design & Build</h4>
+            <p class="step-text">With at least 3 revision rounds, I craft and refine every detail until the result is exactly right — no compromises.</p>
+          </div>
+        </div>
+        <div class="process-step reveal reveal-delay-3">
+          <span class="step-num">04</span>
+          <div class="step-body">
+            <h4 class="step-title">Launch & Handoff</h4>
+            <p class="step-text">Your project is delivered with full ownership rights. I provide guidance and remain available for any support you need.</p>
+          </div>
+        </div>
+      </div>
+      <div class="process-visual">
+        <div class="process-circle">
+          <div class="orbit-dot"></div>
+          <div class="orbit-dot"></div>
+          <div class="orbit-dot"></div>
+          <div class="process-circle-inner">
+            <div class="big-num">4</div>
+            <div class="big-label">Simple Steps</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials-section">
+    <div class="testimonials-inner">
+      <div class="section-header reveal" style="margin-left: 0; text-align: left;">
+        <p class="section-label">Client Words</p>
+        <h2 class="section-title">What They <em>Say</em></h2>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card reveal">
+          <div class="stars">★★★★★</div>
+          <span class="quote-mark">"</span>
+          <p class="testimonial-text">Bahaa delivered a website that completely transformed how clients perceive our business. The attention to detail and the design quality genuinely exceeded every expectation we had.</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">S</div>
+            <div>
+              <div class="author-name">Sarah M.</div>
+              <div class="author-role">Boutique Owner</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card reveal reveal-delay-1">
+          <div class="stars">★★★★★</div>
+          <span class="quote-mark">"</span>
+          <p class="testimonial-text">The logo he designed is exactly what I needed. Professional, unique, and timeless. Worth every dollar.</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">K</div>
+            <div>
+              <div class="author-name">Karim H.</div>
+              <div class="author-role">Startup Founder</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card reveal reveal-delay-2">
+          <div class="stars">★★★★★</div>
+          <span class="quote-mark">"</span>
+          <p class="testimonial-text">Fast, communicative, and incredibly talented. My social media presence improved dramatically after working with Crafted Webs.</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">L</div>
+            <div>
+              <div class="author-name">Lara T.</div>
+              <div class="author-role">Content Creator</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <div class="contact-section">
+      <div class="contact-info">
+        <p class="about-label reveal">Get In Touch</p>
+        <h2 class="contact-tagline reveal reveal-delay-1">
+          Ready to Build<br>Something <em>Remarkable?</em>
+        </h2>
+        <p class="contact-desc reveal reveal-delay-2">
+          Whether you have a fully-formed vision or just an idea, I'd love to hear about your project. Let's create something that sets your brand apart.
+        </p>
+        <div class="contact-channels reveal reveal-delay-3">
+          <a href="mailto:bahaamasri799@gmail.com" class="contact-channel">
+            <img class="channel-icon" src="email.png" alt="Email">
+            bahaamasri799@gmail.com
+          </a>
+          <a href="tel:+96181346557" class="contact-channel">
+            <img class="channel-icon" src="phone.png" alt="Phone">
+            +961 81 346 557
+          </a>
+          <a href="http://wa.me/+96181346557" target="_blank" class="contact-channel">
+            <img class="channel-icon" src="whatsapp.png" alt="WhatsApp">
+            WhatsApp Chat
+          </a>
+        </div>
+      </div>
+      <div class="contact-form-wrap reveal">
+        <form id="contactForm" action="https://formspree.io/f/xjkgeaoy" method="POST">
+          <div class="form-group">
+            <label class="form-label" for="name">Full Name</label>
+            <input type="text" id="name" name="name" class="form-control" placeholder="Your name" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="email">Email Address</label>
+            <input type="email" id="email" name="email" class="form-control" placeholder="your@email.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="service">Service Interested In</label>
+            <select id="service" name="service" class="form-control form-select">
+              <option value="">Select a service...</option>
+              <option>Website Design & Development</option>
+              <option>Logo & Brand Identity</option>
+              <option>Graphic Design & Photo Editing</option>
+              <option>Multiple Services</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="message">Project Details</label>
+            <textarea id="message" name="message" class="form-control" placeholder="Tell me about your project..." required></textarea>
+          </div>
+          <button type="submit" class="btn-submit">Send Message</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="CWL.png" alt="Crafted Webs">
+        <p class="footer-tagline">Premium web design, logo creation, and digital branding — crafted with intention for brands that want to stand out.</p>
+        <div class="footer-social">
+          <a href="https://www.instagram.com/bahaadeenmasri?igsh=M3ZpemhnbDdhZzh3" target="_blank" class="social-btn"><img src="instagram-icon.png" alt="Instagram"></a>
+          <a href="http://wa.me/+96181346557" target="_blank" class="social-btn"><img src="whatsapp.png" alt="WhatsApp"></a>
+          <a href="http://www.linkedin.com/in/bahaa-deen-el-masri-83bb8230b" target="_blank" class="social-btn"><img src="Linkedin.png" alt="LinkedIn"></a>
+          <a href="https://www.facebook.com/share/166DDqNWsB/" target="_blank" class="social-btn"><img src="facebook.png" alt="Facebook"></a>
+          <a href="https://www.tiktok.com/@crafted.webs0?_t=ZS-8tp8kSIcaZE&_r=1" target="_blank" class="social-btn"><img src="tiktok.png" alt="TikTok"></a>
+        </div>
+      </div>
+      <div>
+        <p class="footer-col-title">Navigation</p>
+        <div class="footer-links">
+          <a href="#about">About</a>
+          <a href="#services">Services</a>
+          <a href="#portfolio">Portfolio</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </div>
+      <div>
+        <p class="footer-col-title">Services</p>
+        <div class="footer-links">
+          <a href="#services">Web Design</a>
+          <a href="#services">Logo Design</a>
+          <a href="#services">Graphic Design</a>
+          <a href="#services">Photo Editing</a>
+        </div>
+      </div>
+      <div>
+        <p class="footer-col-title">Legal</p>
+        <div class="footer-links">
+          <a href="terms..html">Terms & Conditions</a>
+          <a href="terms..html">Privacy Policy</a>
+          <a href="terms..html">Refund Policy</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2025 <span>Crafted Webs</span>. All rights reserved.</p>
+      <p class="footer-copy">Designed & built by <span>Bahaa Deen Al Masri</span></p>
+    </div>
+  </footer>
+
+  <!-- Success Modal -->
+  <div class="modal-overlay" id="successModal">
+    <div class="modal-box">
+      <div class="modal-icon">✓</div>
+      <h3 class="modal-title">Message Sent</h3>
+      <p class="modal-text">Thank you for reaching out. I'll get back to you within 24 hours to discuss your project.</p>
+      <button class="modal-close" onclick="document.getElementById('successModal').classList.remove('show')">Close</button>
+    </div>
+  </div>
+
+  <script>
+    // Custom Cursor
+    const cursor = document.getElementById('cursor');
+    const cursorRing = document.getElementById('cursorRing');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+      cursorRing.style.left = e.clientX + 'px';
+      cursorRing.style.top = e.clientY + 'px';
+    });
+    document.querySelectorAll('a, button, .service-card, .portfolio-card').forEach(el => {
+      el.addEventListener('mouseenter', () => cursorRing.classList.add('hovered'));
+      el.addEventListener('mouseleave', () => cursorRing.classList.remove('hovered'));
+    });
+
+    // Sticky Header
+    const header = document.getElementById('mainHeader');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    // Hero bg animation
+    setTimeout(() => document.getElementById('heroBg').classList.add('loaded'), 100);
+
+    // Mobile Nav
+    const overlay = document.getElementById('mobileOverlay');
+    function toggleMobile() { overlay.classList.toggle('open'); }
+    function closeMobile() { overlay.classList.remove('open'); }
+
+    // Scroll Reveal
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    revealEls.forEach(el => observer.observe(el));
+
+  // Contact Form
+  const contactForm = document.getElementById('contactForm');
+  const successModal = document.getElementById('successModal');
+
+  contactForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const submitBtn = contactForm.querySelector('.btn-submit');
+    const originalText = submitBtn.textContent;
+
+    submitBtn.textContent = 'Sending...';
+    submitBtn.disabled = true;
+
+    const formData = new FormData(contactForm);
+
+    try {
+      const response = await fetch(contactForm.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        contactForm.reset();
+        successModal.classList.add('show');
+      } else {
+        alert('Message not sent. Please check your Formspree setup or try again.');
+      }
+    } catch (error) {
+      alert('Connection error. Please try again.');
+    }
+
+    submitBtn.textContent = originalText;
+    submitBtn.disabled = false;
+  });
+  </script>
+</body>
+</html>
